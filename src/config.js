@@ -4,13 +4,18 @@ import { enUS, frFR, zhCN, viVN, arSD } from '@mui/material/locale';
 // routes
 import { PATH_DASHBOARD } from "./routes/paths";
 
-export const BASE_URL = "http://localhost:5000/";
+// export const BASE_URL = "http://localhost:5000/";
+export const BASE_URL = "http://3.6.123.80:5000/";
 
-export const S3_BUCKET_NAME = 'codingmonk';
-export const AWS_ACCESS_KEY = 'AKIARPJQ4HSYLBIK2TDE';
-export const AWS_SECRET_ACCESS_KEY = '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';
+// export const S3_BUCKET_NAME = 'codingmonk';
+// export const AWS_ACCESS_KEY = 'AKIARPJQ4HSYLBIK2TDE';
+// export const AWS_SECRET_ACCESS_KEY = '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';
+// export const AWS_S3_REGION = 'ap-south-1'; // eg. ap-south-1
+
+export const S3_BUCKET_NAME = 'adamtechngologies';
+export const AWS_ACCESS_KEY = 'AKIA6GYMVS42Q26GMNGR';
+export const AWS_SECRET_ACCESS_KEY = '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';
 export const AWS_S3_REGION = 'ap-south-1'; // eg. ap-south-1
-
 export const defaultSettings = {
   themeMode: "light",
   themeDirection: "ltr",
