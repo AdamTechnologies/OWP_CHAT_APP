@@ -4,8 +4,8 @@ import { enUS, frFR, zhCN, viVN, arSD } from '@mui/material/locale';
 // routes
 import { PATH_DASHBOARD } from "./routes/paths";
 
-export const BASE_URL = "http://localhost:5000/";
-// export const BASE_URL = "http://3.6.123.80:5000/";
+// export const BASE_URL = "http://localhost:5000/";
+export const BASE_URL = "http://54.64.181.148:5000/";
 
 // export const S3_BUCKET_NAME = 'codingmonk';
 // export const AWS_ACCESS_KEY = 'AKIARPJQ4HSYLBIK2TDE';
