@@ -4,13 +4,14 @@ import axios from "../../utils/axios";
 import { showSnackbar } from "./app";
 
 // ----------------------------------------------------------------------
+const storedUserId = window.localStorage.getItem("user_id");
 
 const initialState = {
   isLoggedIn: false,
   token: "",
   isLoading: false,
   user: null,
-  user_id: null,
+  user_id: storedUserId,
   email: "",
   error: false,
 };

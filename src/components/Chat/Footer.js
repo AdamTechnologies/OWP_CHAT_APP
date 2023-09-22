@@ -18,13 +18,14 @@ import {
   User,
 } from "phosphor-react";
 import { useTheme, styled } from "@mui/material/styles";
-import React, { useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import useResponsive from "../../hooks/useResponsive";
 
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
 import { socket } from "../../socket";
 import { useSelector } from "react-redux";
+import { KeyboardEvent } from "react";
 
 const StyledInput = styled(TextField)(({ theme }) => ({
   "& .MuiInputBase-input": {
@@ -72,8 +73,16 @@ const ChatInput = ({
   setValue,
   value,
   inputRef,
+  sendMessage
 }) => {
   const [openActions, setOpenActions] = React.useState(false);
+
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault(); // Prevent the default behavior of Enter key in the textarea
+      sendMessage(); // Call the sendMessage function
+    }
+  };
 
   return (
     <StyledInput
@@ -82,6 +91,7 @@ const ChatInput = ({
       onChange={(event) => {
         setValue(event.target.value);
       }}
+      onKeyDown={handleKeyPress}
       fullWidth
       placeholder="Write a message..."
       variant="filled"
@@ -183,14 +193,30 @@ const Footer = () => {
 
       setValue(
         value.substring(0, selectionStart) +
-          emoji +
-          value.substring(selectionEnd)
+        emoji +
+        value.substring(selectionEnd)
       );
 
       // Move the cursor to the end of the inserted emoji
       input.selectionStart = input.selectionEnd = selectionStart + 1;
     }
   }
+
+  const sendMessage = useCallback(() => {
+    if (value.trim() !== "") {
+      socket.emit("text_message", {
+        message: linkify(value),
+        conversation_id: room_id,
+        from: user_id,
+        to: current_conversation.user_id,
+        type: containsUrl(value) ? "Link" : "Text",
+      });
+
+      // Clear the input after sending
+      setValue("");
+    }
+  }, [value, setValue, room_id, user_id, current_conversation]);
+
 
   return (
     <Box
@@ -231,6 +257,7 @@ const Footer = () => {
             </Box>
             {/* Chat Input */}
             <ChatInput
+              sendMessage={sendMessage}
               inputRef={inputRef}
               value={value}
               setValue={setValue}
@@ -260,6 +287,7 @@ const Footer = () => {
                     to: current_conversation.user_id,
                     type: containsUrl(value) ? "Link" : "Text",
                   });
+                  setValue("");
                 }}
               >
                 <PaperPlaneTilt color="#ffffff" />

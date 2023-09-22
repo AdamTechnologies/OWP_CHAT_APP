@@ -56,6 +56,13 @@ const ChatElement = ({ img, name, msg, time, unread, online, id }) => {
   }
 
   const theme = useTheme();
+const changeDate=(dates)=>{
+
+  const date=new Date(dates)
+          const hours = date.getHours();
+          const minutes = date.getMinutes();
+          return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`
+}
 
   return (
     <StyledChatBox
@@ -102,7 +109,9 @@ const ChatElement = ({ img, name, msg, time, unread, online, id }) => {
         </Stack>
         <Stack spacing={2} alignItems={"center"}>
           <Typography sx={{ fontWeight: 600 }} variant="caption">
-            {time}
+            {/* {new Date(time).toDateString()} */}
+            {changeDate(time)}
+            {console.log({time},"tyope",typeof time)}
           </Typography>
           <Badge
             className="unread-count"

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Dialog, DialogContent, Slide, Stack, Tab, Tabs } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -16,15 +16,17 @@ const UsersList = () => {
   const dispatch = useDispatch();
 
   const { users } = useSelector((state) => state.app);
+  const [render,setRender]=useState(false)
 
   useEffect(() => {
+    if(render) setRender(false)
     dispatch(FetchUsers());
-  }, []);
+  }, [render]);
 
   return (
     <>
       {users.map((el, idx) => {
-        return <UserElement key={idx} {...el} />;
+        return <UserElement key={idx} {...el} setRender={setRender}  />;
       })}
     </>
   );

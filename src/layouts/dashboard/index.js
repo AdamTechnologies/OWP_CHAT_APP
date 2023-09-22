@@ -10,6 +10,7 @@ import {
   UpdateDirectConversation,
   AddDirectConversation,
   AddDirectMessage,
+  addMessageInConversation
 } from "../../redux/slices/conversation";
 import AudioCallNotification from "../../sections/Dashboard/Audio/CallNotification";
 import VideoCallNotification from "../../sections/Dashboard/video/CallNotification";
@@ -37,6 +38,7 @@ const DashboardLayout = () => {
   );
 
   useEffect(() => {
+    console.log("current_conversation useEffect",current_conversation);
     dispatch(FetchUserProfile());
   }, []);
   
@@ -60,7 +62,8 @@ const DashboardLayout = () => {
       window.onload();
 
       if (!socket) {
-        connectSocket(user_id);
+        // console.log()
+        connectSocket(window.localStorage.getItem('user_id'));
       }
 
       socket.on("audio_call_notification", (data) => {
@@ -74,10 +77,13 @@ const DashboardLayout = () => {
       });
 
       socket.on("new_message", (data) => {
+
+        console.log("new_message");
         const message = data.message;
-        console.log(current_conversation, data);
+        console.log({current_conversation}, {data},{conversations});
         // check if msg we got is from currently selected conversation
         if (current_conversation?.id === data.conversation_id) {
+          console.log("inside")
           dispatch(
             AddDirectMessage({
               id: message._id,
@@ -88,26 +94,48 @@ const DashboardLayout = () => {
               outgoing: message.from === user_id,
             })
           );
+
+          console.log({
+            conversationId:data.conversation_id,
+            message: message.text
+      })
+          dispatch(
+            addMessageInConversation({
+              conversationId:data.conversation_id,
+              message: message.text
+        })
+          );
+          // updateConversationMessage
+        }
+        if(conversations && conversations.find(elm=>elm.id===data.conversation_id)){
+          
         }
       });
 
       socket.on("start_chat", (data) => {
-        console.log(data);
+        console.log("start_chat");
+        console.log("startchat",data);
         // add / update to conversation list
         const existing_conversation = conversations.find(
           (el) => el?.id === data._id
         );
+        console.log("existing_conversation",existing_conversation)
+        console.log("room_id",data._id)
+        dispatch(SelectConversation({ room_id: data._id })); 
+        // dispatch(setCurrentConversationData(data))
         if (existing_conversation) {
           // update direct conversation
           dispatch(UpdateDirectConversation({ conversation: data }));
         } else {
           // add direct conversation
+          console.log("conversation")
           dispatch(AddDirectConversation({ conversation: data }));
-        }
-        dispatch(SelectConversation({ room_id: data._id }));
+          // dispatch(SelectConversation({ room_id: data._id })); 
+        } 
       });
 
       socket.on("new_friend_request", (data) => {
+        console.log("new_friend_request");
         dispatch(
           showSnackbar({
             severity: "success",
@@ -117,6 +145,7 @@ const DashboardLayout = () => {
       });
 
       socket.on("request_accepted", (data) => {
+        console.log("request_accepted");
         dispatch(
           showSnackbar({
             severity: "success",
@@ -126,6 +155,7 @@ const DashboardLayout = () => {
       });
 
       socket.on("request_sent", (data) => {
+        console.log("request_sent");
         dispatch(showSnackbar({ severity: "success", message: data.message }));
       });
     }
@@ -139,7 +169,7 @@ const DashboardLayout = () => {
       socket?.off("new_message");
       socket?.off("audio_call_notification");
     };
-  }, [isLoggedIn, socket]);
+  }, [isLoggedIn, socket,current_conversation]);
 
   if (!isLoggedIn) {
     return <Navigate to={"/auth/login"} />;

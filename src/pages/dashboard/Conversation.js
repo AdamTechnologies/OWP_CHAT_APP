@@ -32,16 +32,17 @@ const Conversation = ({ isMobile, menu }) => {
   useEffect(() => {
     const current = conversations.find((el) => el?.id === room_id);
 
+    console.log("get_messages");
     socket.emit("get_messages", { conversation_id: current?.id }, (data) => {
       // data => list of messages
       console.log(data, "List of messages");
       dispatch(FetchCurrentMessages({ messages: data }));
     });
-
     dispatch(SetCurrentConversation(current));
-  }, []);
+  }, [room_id]);
   return (
     <Box p={isMobile ? 1 : 3}>
+      {/* <h1>HERE</h1> */}
       <Stack spacing={3}>
         {current_messages.map((el, idx) => {
           switch (el.type) {

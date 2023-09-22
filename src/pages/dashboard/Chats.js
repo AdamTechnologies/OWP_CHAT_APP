@@ -28,6 +28,7 @@ import Friends from "../../sections/Dashboard/Friends";
 import { socket } from "../../socket";
 import { useDispatch, useSelector } from "react-redux";
 import { FetchDirectConversations } from "../../redux/slices/conversation";
+import { SelectConversation } from "../../redux/slices/app";
 
 const user_id = window.localStorage.getItem("user_id");
 
@@ -40,10 +41,13 @@ const Chats = () => {
   const {conversations} = useSelector((state) => state.conversation.direct_chat);
 
   useEffect(() => {
+    console.log("get_direct_conversations")
     socket.emit("get_direct_conversations", { user_id }, (data) => {
-      console.log(data); // this data is the list of conversations
+      // console.log("get_direct_conversations",data); // this data is the list of conversations
       // dispatch action
-
+      if(!data?.length){
+        dispatch(SelectConversation({room_id:null}))
+      }
       dispatch(FetchDirectConversations({ conversations: data }));
     });
   }, []);
@@ -128,7 +132,7 @@ const Chats = () => {
                   return <ChatElement {...el} />;
                 })} */}
                 <Typography variant="subtitle2" sx={{ color: "#676667" }}>
-                  All Chats
+                  All Chats HERE
                 </Typography>
                 {/* Chat List */}
                 {conversations.filter((el) => !el.pinned).map((el, idx) => {

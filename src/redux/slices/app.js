@@ -53,7 +53,7 @@ const slice = createSlice({
     },
 
     openSnackBar(state, action) {
-      console.log(action.payload);
+      // console.log(action.payload);
       state.snackbar.open = true;
       state.snackbar.severity = action.payload.severity;
       state.snackbar.message = action.payload.message;
@@ -76,6 +76,7 @@ const slice = createSlice({
       state.friendRequests = action.payload.requests;
     },
     selectConversation(state, action) {
+      console.log("selectConversation inside red",action.payload)
       state.chat_type = "individual";
       state.room_id = action.payload.room_id;
     },
@@ -136,7 +137,7 @@ export function FetchUsers() {
         }
       )
       .then((response) => {
-        console.log(response);
+        // console.log(response);
         dispatch(slice.actions.updateUsers({ users: response.data.data }));
       })
       .catch((err) => {

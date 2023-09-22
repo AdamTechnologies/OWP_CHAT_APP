@@ -49,7 +49,7 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
   },
 }));
 
-const UserElement = ({ img, firstName, lastName, online, _id }) => {
+const UserElement = ({ img, firstName, lastName, online, _id,setRender }) => {
   const theme = useTheme();
 
   const name = `${firstName} ${lastName}`;
@@ -92,6 +92,7 @@ const UserElement = ({ img, firstName, lastName, online, _id }) => {
             onClick={() => {
               socket.emit("friend_request", { to: _id, from: user_id }, () => {
                 alert("request sent");
+                setRender(true)
               });
             }}
           >
@@ -152,6 +153,7 @@ const FriendRequestElement = ({
         <Stack direction={"row"} spacing={2} alignItems={"center"}>
           <Button
             onClick={() => {
+              console.log("accept_request");
               //  emit "accept_request" event
               socket.emit("accept_request", { request_id: id });
             }}
